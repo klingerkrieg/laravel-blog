@@ -20,3 +20,4 @@ Route::get('/', [HomeController::class,"index"])->name('home');
 Route::get('/about', [HomeController::class,"about"])->name('about');
 Route::get('/posts', [PostController::class,"index"])->name('posts');
 Route::get('/contact', [ContactController::class,"index"])->name('contact');
+Route::post('/contact', [ContactController::class,"form"])->name('contact.form');
