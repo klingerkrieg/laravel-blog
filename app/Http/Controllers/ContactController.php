@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ContactPostRequest;
 use App\Models\Contact;
 use App\Notifications\NewContact;
 use Illuminate\Http\Request;
@@ -14,9 +15,18 @@ class ContactController extends Controller
         return view("contact");
     }
 
-    public function form(Request $request)
+    public function form(ContactPostRequest $request)
     {
+
+        $validated = $request->validated();
         #ddd($request);
+        /*$validated = $request->validate([
+            'name' => 'required|max:250',
+            'email' => 'required|max:250|email',
+            'phone' => 'integer',
+            'subject' => 'required|max:250',
+            'message' => 'required|max:8000'
+        ]);*/
 
         #salva o contato
         $contact = Contact::create($request->all());
@@ -26,6 +36,6 @@ class ContactController extends Controller
                         ->notify(new NewContact($contact));
 
         #volta para a tela do formulário
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Your message was sent');  
     }
 }
