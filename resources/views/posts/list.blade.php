@@ -17,15 +17,10 @@
 
                 <div class="col-md-6">
                     <input id="subject" type="text" 
-                            class="form-control @error('subject') is-invalid @enderror" 
+                            class="form-control" 
                             name="subject" value="{{ old('subject') }}" 
-                            required autofocus>
+                            autofocus>
 
-                    @error('subject')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
                 </div>
             </div>
 
@@ -35,15 +30,8 @@
 
                 <div class="col-md-6">
                     <input id="publish_date" type="date" 
-                            class="form-control @error('publish_date') is-invalid @enderror" 
-                            name="publish_date" value="{{ old('publish_date') }}" 
-                            required>
-
-                    @error('publish_date')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
+                            class="form-control" 
+                            name="publish_date" value="{{ old('publish_date') }}" >
                 </div>
             </div>
 
@@ -52,13 +40,9 @@
                     {{ __('Text') }}</label>
 
                 <div class="col-md-6">
-                    <textarea name="text" id="text" class="form-control"></textarea>
-
-                    @error('text')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
+                    <input id="text" type="text" 
+                            class="form-control" 
+                            name="text" value="{{ old('text') }}" >
                 </div>
             </div>
             
@@ -75,26 +59,43 @@
             </div>
         </form>
 
-        <ul>
-        @foreach ($list as $item)
-        <li>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">{{__("Subject")}}</th>
+                <th scope="col">{{__("Slug")}}</th>
+                <th scope="col">{{__("Publish date")}}</th>
+                <th scope="col">{{__("Text")}}</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+            @foreach ($list as $item)
+                <tr>
+                    <td>
+                        <a href="{{route("post.edit",$item)}}" class="btn btn-primary">
+                            {{ __('Edit') }}
+                        </a>
+                    </td>
+                    <td>{{ $item->subject }}</td>
+                    <td>{{ $item->slug }}</td>
+                    <td>{{ $item->publish_date->format('d/m/Y') }}</td>
+                    <td>{{ $item->text }}</td>
+                    <td>
+                        <form action="{{route('post.destroy',$item)}}" method="post">
+                            @csrf
+                            @method("DELETE")
+                            <button type="button" onclick="confirmDeleteModal(this)" class="btn btn-danger">
+                                {{ __('Delete') }}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+          </table>
 
-            {{$item->subject}} | {{$item->slug}} | {{$item->text}} |
-            
-            <form action="{{route('post.destroy',$item)}}" method="post">
-                @csrf
-                @method("DELETE")
-                <button type="submit" class="btn btn-danger">
-                    {{ __('Delete') }}
-                </button>
-            </form>
-
-            <a href="{{route("post.edit",$item)}}" class="btn btn-primary">
-                {{ __('Edit') }}
-            </a>
-        </li>
-        @endforeach
-        </ul>  
         {{ $list->links() }}
 
     </div>

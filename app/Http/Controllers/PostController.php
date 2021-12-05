@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -13,16 +14,39 @@ class PostController extends Controller
 
 
     public function list(Request $request){
-        return view("posts.list", ["list"=>Post::paginate(3)]);
+
+        $pagination = Post::orderBy("subject");
+
+        if (isset($request->subject))
+            $pagination->where("subject","like","%$request->subject%");
+        if (isset($request->text))
+            $pagination->where("text","like","%$request->text%");
+        if (isset($request->publish_date)) 
+            $pagination->whereDate("publish_date",$request->publish_date);
+
+        #$pagination->dd();
+        #$pagination->dump();
+        return view("posts.list", ["list"=>$pagination->paginate(3)]);
     }
 
+    #cria o obj item vazio
     public function create(){
-        return view("posts.form");
+        return view("posts.form", ["item"=>new Post()]);
     }
 
-    public function store(Request $request){
-        Post::create($request->all());
-        return redirect()->back()->with("success","Data saved!");
+    #abre o formulario de edição
+    public function edit(Post $post){
+        return view("posts.form",["item"=>$post]);
+    }
+
+    public function store(PostRequest $request){
+        $validated = $request->validated();
+        $path = $request->file('image')->store('posts',"public");
+
+        $validated["image"] = $path;
+
+        $post = Post::create($validated);
+        return redirect(route("post.edit",$post))->with("success","Data saved!");
     }
 
     public function destroy(Post $post){
@@ -30,14 +54,18 @@ class PostController extends Controller
         return redirect(route("post.list"))->with("success","Data deleted!");
     }
 
-    #abre o formulario de edição
-    public function edit(Post $post){
-        return view("posts.edit",["item"=>$post]);
-    }
+    
 
     #salva as edições
-    public function update(Post $post, Request $request) {
-        $post->update($request->all());
+    public function update(Post $post, PostRequest $request) {
+        $validated = $request->validated();
+        #necessário, pois não é obrigatório atualizar a imagem
+        if ($request->file('image') != null){
+            $path = $request->file('image')->store('posts',"public");
+            $validated["image"] = $path;
+        }
+
+        $post->update($validated);
         return redirect()->back()->with("success","Data updated!");
     }
     
