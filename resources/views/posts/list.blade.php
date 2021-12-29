@@ -67,6 +67,7 @@
                 <th scope="col">{{__("Slug")}}</th>
                 <th scope="col">{{__("Publish date")}}</th>
                 <th scope="col">{{__("Text")}}</th>
+                <th scope="col">{{__("Owner")}}</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -82,6 +83,7 @@
                     <td>{{ $item->slug }}</td>
                     <td>{{ $item->publish_date->format('d/m/Y') }}</td>
                     <td>{{ $item->text }}</td>
+                    <td>{{ $item->user->name }}</td>
                     <td>
                         <form action="{{route('post.destroy',$item)}}" method="post">
                             @csrf

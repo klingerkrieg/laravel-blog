@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -43,9 +44,11 @@ class PostController extends Controller
         $validated = $request->validated();
         $path = $request->file('image')->store('posts',"public");
 
-        $validated["image"] = $path;
+        $data = $request->all();
+        $data["image"] = $path;
+        $data["user_id"] = Auth::user()->id;
 
-        $post = Post::create($validated);
+        $post = Post::create($data);
         return redirect(route("post.edit",$post))->with("success","Data saved!");
     }
 
@@ -59,13 +62,15 @@ class PostController extends Controller
     #salva as edições
     public function update(Post $post, PostRequest $request) {
         $validated = $request->validated();
+        
+        $data = $request->all();
         #necessário, pois não é obrigatório atualizar a imagem
         if ($request->file('image') != null){
             $path = $request->file('image')->store('posts',"public");
-            $validated["image"] = $path;
+            $data["image"] = $path;
         }
 
-        $post->update($validated);
+        $post->update($data);
         return redirect()->back()->with("success","Data updated!");
     }
     

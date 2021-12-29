@@ -18,6 +18,19 @@
 
             @csrf
 
+        @if ($item->id != "")            
+        <div class="row mb-3">
+            <label for="subject" class="col-md-4 col-form-label text-md-right">
+                {{ __('Dono') }}</label>
+                
+                <div class="col-md-6">
+                    <input  class="form-control" 
+                    name="subject" value="{{ $item->user->name }}" 
+                    disabled>
+                </div>
+        </div>
+        @endif
+            
             <div class="row mb-3">
                 <label for="subject" class="col-md-4 col-form-label text-md-right">
                     {{ __('Subject') }}</label>

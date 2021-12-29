@@ -3,7 +3,9 @@
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -37,3 +39,20 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 Route::get('test_clear', [TestController::class,"delete_user"]);
+
+
+
+Route::get('/user/list', [UserController::class,"list"])->name('user.list')->middleware("auth");
+Route::post('/user', [UserController::class,"store"])->name('user.store')->middleware("auth");
+Route::get('/user/{user}', [UserController::class,"edit"])->name('user.edit')->middleware("auth");
+Route::put("/user/{user}", [UserController::class,"update"])->name('user.update')->middleware("auth");
+Route::delete('/user/{user}', [UserController::class,"destroy"])->name('user.destroy')->middleware("auth");
+
+
+
+Route::get('/category/list', [CategoryController::class,"list"])->name('category.list')->middleware("auth");
+Route::get('/category', [CategoryController::class,"create"])->name('category.create')->middleware("auth");
+Route::post('/category', [CategoryController::class,"store"])->name('category.store')->middleware("auth");
+Route::get('/category/{category}', [CategoryController::class,"edit"])->name('category.edit')->middleware("auth");
+Route::put("/category/{category}", [CategoryController::class,"update"])->name('category.update')->middleware("auth");
+Route::delete('/category/{category}', [CategoryController::class,"destroy"])->name('category.destroy')->middleware("auth");
