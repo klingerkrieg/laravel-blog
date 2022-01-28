@@ -6,15 +6,18 @@ use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
     public function index(Request $request) {
+        #Gate::authorize('viewAny', Post::class);
         return view("post");
     }
 
 
     public function list(Request $request){
+        #Gate::authorize('viewAny', Post::class);
 
         $pagination = Post::orderBy("subject");
 
@@ -32,15 +35,18 @@ class PostController extends Controller
 
     #cria o obj item vazio
     public function create(){
-        return view("posts.form", ["item"=>new Post()]);
+        #Gate::authorize('create', Post::class);
+        return view("posts.form", ["data"=>new Post()]);
     }
 
     #abre o formulario de edição
     public function edit(Post $post){
-        return view("posts.form",["item"=>$post]);
+        #Gate::authorize('view', $post);
+        return view("posts.form",["data"=>$post]);
     }
 
     public function store(PostRequest $request){
+        #Gate::authorize('create', Post::class);
         $validated = $request->validated();
         $path = $request->file('image')->store('posts',"public");
 
@@ -53,6 +59,7 @@ class PostController extends Controller
     }
 
     public function destroy(Post $post){
+        #Gate::authorize('delete', $post);
         $post->delete();
         return redirect(route("post.list"))->with("success","Data deleted!");
     }
@@ -61,6 +68,8 @@ class PostController extends Controller
 
     #salva as edições
     public function update(Post $post, PostRequest $request) {
+        #Gate::authorize('update', $post);
+
         $validated = $request->validated();
         
         $data = $request->all();

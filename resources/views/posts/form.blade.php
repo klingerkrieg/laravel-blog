@@ -9,23 +9,23 @@
 
     <div class="card-body">
 
-        @if ($item->id == "")
+        @if ($data->id == "")
             <form id="main" method="POST" action="{{ route('post.store') }}" enctype="multipart/form-data">
         @else
-            <form id="main" method="POST" action="{{ route('post.update',$item) }}" enctype="multipart/form-data">
+            <form id="main" method="POST" action="{{ route('post.update',$data) }}" enctype="multipart/form-data">
             @method('PUT')
         @endif
 
             @csrf
 
-        @if ($item->id != "")            
+        @if ($data->id != "")            
         <div class="row mb-3">
             <label for="subject" class="col-md-4 col-form-label text-md-right">
                 {{ __('Dono') }}</label>
                 
                 <div class="col-md-6">
                     <input  class="form-control" 
-                    name="subject" value="{{ $item->user->name }}" 
+                    name="subject" value="{{ $data->user->name }}" 
                     disabled>
                 </div>
         </div>
@@ -38,7 +38,7 @@
                 <div class="col-md-6">
                     <input id="subject" type="text" 
                             class="form-control @error('subject') is-invalid @enderror" 
-                            name="subject" value="{{ old('subject',$item->subject) }}" 
+                            name="subject" value="{{ old('subject',$data->subject) }}" 
                             autofocus>
 
                     @error('subject')
@@ -56,7 +56,7 @@
                 <div class="col-md-6">
                     <input id="publish_date" type="date" 
                             class="form-control @error('publish_date') is-invalid @enderror" 
-                            name="publish_date" value="{{ old('publish_date',$item->publish_date == "" ? "" : $item->publish_date->format('Y-m-d')) }}" 
+                            name="publish_date" value="{{ old('publish_date',$data->publish_date == "" ? "" : $data->publish_date->format('Y-m-d')) }}" 
                             >
 
                     @error('publish_date')
@@ -76,8 +76,8 @@
                     <input type="file" name="image" id="image"
                         class="form-control-file @error('image') is-invalid @enderror">
 
-                    @if ($item->id)
-                        <img src="{{asset($item->image)}}" class="rounded" width='200'/>
+                    @if ($data->id)
+                        <img src="{{asset($data->image)}}" class="rounded" width='200'/>
                     @endif
 
                     @error('image')
@@ -93,7 +93,7 @@
                     {{ __('Slug') }}</label>
 
                 <div class="col-md-6">
-                    <input type="text" readonly value="{{$item->slug}}"
+                    <input type="text" readonly value="{{$data->slug}}"
                     class="form-control @error('slug') is-invalid @enderror">
                     @error('slug')
                     <span class="invalid-feedback" role="alert">
@@ -111,7 +111,7 @@
                 <div class="col-md-6">
                     <textarea name="text" id="text" 
                     class="form-control @error('text') is-invalid @enderror"
-                    >{{old('text',$item->text)}}</textarea>
+                    >{{old('text',$data->text)}}</textarea>
 
                     @error('text')
                         <span class="invalid-feedback" role="alert">
@@ -125,16 +125,21 @@
             
             <div class="row mb-0">
                 <div class="col-md-8 offset-md-4">
+                    @can('update',$data)
                     <button type="submit" class="btn btn-primary" form="main">
                         {{ __('Save') }}
                     </button>
-
+                    @endcan
+                    
+                    @can('create',$data)
                     <a class="btn btn-secondary" href='{{route("post.create")}}'>
                         {{ __('New Post') }}
                     </a>
+                    @endcan
 
-                    @if ($item->id != "")
-                    <form name='delete' action="{{route('post.destroy',$item)}}" 
+                    
+                    @can('delete',$data)
+                    <form name='delete' action="{{route('post.destroy',$data)}}" 
                         method="post"
                         style='display: inline-block;'>
                         @csrf
@@ -143,7 +148,7 @@
                             {{ __('Delete') }}
                         </button>
                     </form>
-                    @endif
+                    @endcan
                 </div>
             </div>
     </div>

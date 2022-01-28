@@ -54,17 +54,23 @@
                             @endif
                         @else
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('post.list') }}">{{ __('Posts') }}</a>
-                        </li>
+                            @can('viewAny', App\Models\Post::class)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('post.list') }}">{{ __('Posts') }}</a>
+                            </li>
+                            @endcan
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('category.list') }}">{{ __('Categories') }}</a>
-                        </li>
+                            @can('viewAny', App\Models\Category::class)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('category.list') }}">{{ __('Categories') }}</a>
+                            </li>
+                            @endcan
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('user.list') }}">{{ __('Users') }}</a>
-                        </li>
+                            @can('viewAny', App\Models\User::class)
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('user.list') }}">{{ __('Users') }}</a>
+                            </li>
+                            @endcan
                             
 
                             <li class="nav-item dropdown">

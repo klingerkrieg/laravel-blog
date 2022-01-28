@@ -68,31 +68,39 @@
                 <th scope="col">{{__("Publish date")}}</th>
                 <th scope="col">{{__("Text")}}</th>
                 <th scope="col">{{__("Owner")}}</th>
-                <th scope="col"></th>
+                @can('delete', Post::class)
+                    <th scope="col"></th>
+                @endcan
               </tr>
             </thead>
             <tbody>
             @foreach ($list as $item)
                 <tr>
+                    @can('view', $item)
                     <td>
                         <a href="{{route("post.edit",$item)}}" class="btn btn-primary">
                             {{ __('Edit') }}
                         </a>
                     </td>
+                    @endcan
                     <td>{{ $item->subject }}</td>
                     <td>{{ $item->slug }}</td>
                     <td>{{ $item->publish_date->format('d/m/Y') }}</td>
                     <td>{{ $item->text }}</td>
                     <td>{{ $item->user->name }}</td>
-                    <td>
-                        <form action="{{route('post.destroy',$item)}}" method="post">
-                            @csrf
-                            @method("DELETE")
-                            <button type="button" onclick="confirmDeleteModal(this)" class="btn btn-danger">
-                                {{ __('Delete') }}
-                            </button>
-                        </form>
-                    </td>
+
+                    @can('delete', $item)
+                        <td>
+                            <form action="{{route('post.destroy',$item)}}" method="post">
+                                @csrf
+                                @method("DELETE")
+                                <button type="button" onclick="confirmDeleteModal(this)" class="btn btn-danger">
+                                    {{ __('Delete') }}
+                                </button>
+                            </form>
+                        </td>
+                    @endcan
+                    
                 </tr>
             @endforeach
             </tbody>
