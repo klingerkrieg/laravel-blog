@@ -74,14 +74,14 @@
             @endforeach
             </ol>--}}
 
-            
+            @if($item->exists)
             <ol>
             @foreach ($posts as $post)
                 <li><a href='{{route('post.edit',$post)}}'>{{ $post->subject }}</a></li>
             @endforeach
             </ol>
             {{ $posts->links() }}
-
+            @endif
         </form>
             
             <div class="row mb-0">

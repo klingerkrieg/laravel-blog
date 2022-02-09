@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Post;
-use App\Policies\PostPolicy;
+use App\Policies\AccessPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -28,12 +28,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::before(function ($user, $ability) {
+        /*Gate::before(function ($user, $ability) {
             if ($user->isAdministrator()) {
                 return true;
             }
-        });
+        });*/
 
-        #Gate::define('update-post', [PostPolicy::class, 'update']);
+        Gate::define('admin-access', [AccessPolicy::class, 'admin']);
     }
 }

@@ -39,8 +39,7 @@ class PostPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
-    {
+    public function create(User $user) {
         return $user->level >= User::AUTHOR_LEVEL;
     }
 
@@ -53,7 +52,8 @@ class PostPolicy
      */
     public function update(User $user, Post $post)
     {
-        return $user->level == User::AUTHOR_LEVEL && $user->id == $post->user_id;
+        return $user->level == User::AUTHOR_LEVEL && $user->id == $post->user_id
+            || $user->level == User::ADMIN_LEVEL && $post->exists;
     }
 
     /**
@@ -65,7 +65,8 @@ class PostPolicy
      */
     public function delete(User $user, Post $post)
     {
-        return $user->level == User::AUTHOR_LEVEL && $user->id == $post->user_id;
+        return $user->level == User::AUTHOR_LEVEL && $user->id == $post->user_id 
+            || $user->level == User::ADMIN_LEVEL && $post->exists;
     }
 
     

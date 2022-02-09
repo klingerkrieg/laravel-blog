@@ -29,7 +29,9 @@ class CategoryController extends Controller
 
     #cria o obj item vazio
     public function create(){
-        return view("categories.form", ["item"=>new Category()]);
+        $postsList = Post::all();
+        return view("categories.form", ["item"=>new Category(),
+                                        "postsList"=>$postsList]);
     }
 
     #abre o formulario de edição

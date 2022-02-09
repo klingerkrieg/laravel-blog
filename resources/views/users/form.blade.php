@@ -56,18 +56,16 @@
                 </div>
             </div>
 
-            {{--<ol>
-            @foreach ($item->posts as $post)
-                <li><a href='{{route('post.edit',$post)}}'>{{ $post->subject }}</a></li>
-            @endforeach
-            </ol>--}}
-
             <ol>
             @foreach ($posts as $post)
                 <li><a href='{{route('post.edit',$post)}}'>{{ $post->subject }}</a></li>
             @endforeach
             </ol>
             {{ $posts->links() }}
+
+
+
+            @include('users.address')
 
         </form>
             

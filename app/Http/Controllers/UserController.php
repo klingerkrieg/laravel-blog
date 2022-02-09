@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -44,15 +45,27 @@ class UserController extends Controller
             #'name' => ['required', 'string', 'max:255'],
             #'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             #'password' => ['required', 'string', 'min:8', 'confirmed'],
+            "cep"           => ["regex:/[0-9]{5}\-[0-9]{3}/"],
+            "number"        => ["required","string"],
+            "street"        => ["required","string"],
+            "complement"    => ["nullable","string"],
+            "district"      => ["required","string"],
+            "city"          => ["required","string"],
+            "state"         => ["required","string"],
         ]);
     }
+    
 
     public function store(Request $request){
-        $this->validator($request->all())->validate();
+        $valid = $this->validator($request->all())->validate();
         
         $data = $request->all();
-        $User = User::create($data);
-        return redirect(route("user.edit",$User))->with("success","Data saved!");
+        $user = User::create($data);
+
+        $valid["user_id"] = $user->id;
+        Address::updateOrCreate($valid);
+
+        return redirect(route("user.edit",$user))->with("success","Data saved!");
     }
 
     public function destroy(User $user){
@@ -63,11 +76,31 @@ class UserController extends Controller
     
 
     #salva as edições
-    public function update(User $User, Request $request) {
-        $this->validator($request->all())->validate();
-        $data = $request->all();
-        $User->update($data);
+    public function update(User $user, Request $request) {
+        $valid = $this->validator($request->all())->validate();
+
+        #$data = $request->all();
+        #$user->update($data);
+
+        $valid["user_id"] = $user->id;
+        Address::updateOrCreate($valid);
+
         return redirect()->back()->with("success","Data updated!");
+    }
+
+
+    public function verifyEmail($email){
+        $validator = Validator::make(["email"=>$email], ["email"=>"email"]);
+
+        $resp = ["valid"=>true, "exists"=>false];
+        if ($validator->fails())
+            $resp["valid"] = false;
+
+        $user = User::where(["email"=>$email])->first();
+        if ($user != null)
+            $resp["exists"] = true;
+        
+        return response()->json($resp);
     }
     
 }

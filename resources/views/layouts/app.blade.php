@@ -10,8 +10,14 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
+    <script src="{{ asset('js/jquery-3.6.0.js') }}"></script>
+    <script src="{{ asset('js/jquery.mask.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}" defer></script>
     <script src="{{ asset('js/main.js') }}"></script>
+
+    <script>
+    var SITE_URL = "{{URL::to('/')}}";
+    </script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -60,13 +66,13 @@
                             </li>
                             @endcan
 
-                            @can('viewAny', App\Models\Category::class)
+                            @can('admin-access')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('category.list') }}">{{ __('Categories') }}</a>
                             </li>
                             @endcan
 
-                            @can('viewAny', App\Models\User::class)
+                            @can('admin-access')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('user.list') }}">{{ __('Users') }}</a>
                             </li>

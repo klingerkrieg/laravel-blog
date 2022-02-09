@@ -31,27 +31,27 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('test_clear', [TestController::class,"delete_user"]);
 
 
+Route::get('verificar_email/{email}', [UserController::class,"verifyEmail"])->name("verify_email");
+
+
 
 Route::middleware(['auth','can:viewAny,App\Models\Post'])->group(function () {
     Route::get('/post/list', [PostController::class,"list"])->name('post.list');
-    Route::get('/post', [PostController::class,"create"])->name('post.create')->can('create', Post::class);
-    Route::post('/post', [PostController::class,"store"])->name('post.store')->can('create', Post::class);
+    Route::get('/post', [PostController::class,"create"])->name('post.create')->can('create', 'App\Models\Post');
+    Route::post('/post', [PostController::class,"store"])->name('post.store')->can('create', 'App\Models\Post');
     Route::get('/post/{post}', [PostController::class,"edit"])->name('post.edit')->can('view', 'post');
     Route::put("/post/{post}", [PostController::class,"update"])->name('post.update')->can('update', 'post');
     Route::delete('/post/{post}', [PostController::class,"destroy"])->name('post.destroy')->can('delete', 'post');
 });
 
 
-Route::middleware(['auth','can:viewAny,App\Models\User'])->group(function () {
+Route::middleware(['auth','can:admin-access'])->group(function () {
     Route::get('/user/list', [UserController::class,"list"])->name('user.list');
     Route::post('/user', [UserController::class,"store"])->name('user.store');
     Route::get('/user/{user}', [UserController::class,"edit"])->name('user.edit');
     Route::put("/user/{user}", [UserController::class,"update"])->name('user.update');
     Route::delete('/user/{user}', [UserController::class,"destroy"])->name('user.destroy');
-});
 
-
-Route::middleware(['auth','can:viewAny,App\Models\Category'])->group(function () {
     Route::get('/category/list', [CategoryController::class,"list"])->name('category.list');
     Route::get('/category', [CategoryController::class,"create"])->name('category.create');
     Route::post('/category', [CategoryController::class,"store"])->name('category.store');
