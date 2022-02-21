@@ -31,7 +31,12 @@
         </div>
         @endif
             
-            <div class="row mb-3">
+            <x-input name="subject" id="subject" 
+                        class="subject" style='color:green'
+                        label="Subject" required="true"
+                        :value="$data->subject"></x-input>
+
+            {{--<div class="row mb-3">
                 <label for="subject" class="col-md-4 col-form-label text-md-right">
                     {{ __('Subject') }}</label>
 
@@ -47,7 +52,7 @@
                         </span>
                     @enderror
                 </div>
-            </div>
+            </div>--}}
 
             <div class="row mb-3">
                 <label for="publish_date" class="col-md-4 col-form-label text-md-right">
