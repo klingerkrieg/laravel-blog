@@ -58,11 +58,11 @@
             </div>
 
             <ol>
-            @foreach ($posts as $post)
-                <li><a href='{{route('post.edit',$post)}}'>{{ $post->subject }}</a></li>
+            @foreach ($products as $product)
+                <li><a href='{{route('product.edit',$product)}}'>{{ $product->name }}</a></li>
             @endforeach
             </ol>
-            {{ $posts->links() }}
+            {{ $products->links() }}
 
 
 

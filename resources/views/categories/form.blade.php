@@ -40,26 +40,26 @@
 
 
             <div class="row mb-3">
-                <label for="post_id" class="col-md-4 col-form-label text-md-right">
-                    {{ __('Post') }}</label>
+                <label for="product_id" class="col-md-4 col-form-label text-md-right">
+                    {{ __('Product') }}</label>
                 
                 <div class="col-md-6">
 
-                    <select class="form-select @error('post_id') is-invalid @enderror" 
-                            id="post_id"
-                            name="post_id" >
+                    <select class="form-select @error('product_id') is-invalid @enderror" 
+                            id="product_id"
+                            name="product_id" >
                             <option value=''>{{__("Select one option")}}</option>
                             <option value='50'>Opção invalida</option>
-                        @foreach($postsList as $post)
+                        @foreach($productsList as $product)
                             
-                            <option value='{{$post->id}}'
-                                @if (old('post_id',$item->post_id) == $post->id)
+                            <option value='{{$product->id}}'
+                                @if (old('product_id',$item->product_id) == $product->id)
                                     selected
                                 @endif
-                                >{{$post->subject}}</option>
+                                >{{$product->name}}</option>
                         @endforeach
                     </select>
-                    @error('post_id')
+                    @error('product_id')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
@@ -69,18 +69,18 @@
 
 
             {{--<ol>
-            @foreach ($item->posts as $post)
-                <li><a href='{{route('post.edit',$post)}}'>{{ $post->subject }}</a></li>
+            @foreach ($item->products as $product)
+                <li><a href='{{route('product.edit',$product)}}'>{{ $product->name }}</a></li>
             @endforeach
             </ol>--}}
 
             @if($item->exists)
             <ol>
-            @foreach ($posts as $post)
-                <li><a href='{{route('post.edit',$post)}}'>{{ $post->subject }}</a></li>
+            @foreach ($products as $product)
+                <li><a href='{{route('product.edit',$product)}}'>{{ $product->name }}</a></li>
             @endforeach
             </ol>
-            {{ $posts->links() }}
+            {{ $products->links() }}
             @endif
         </form>
             

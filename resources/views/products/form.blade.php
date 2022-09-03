@@ -5,14 +5,14 @@
 <div class="row justify-content-center">
 <div class="col-md-8">
 <div class="card">
-    <div class="card-header">{{ __('Posts') }}</div>
+    <div class="card-header">{{ __('Products') }}</div>
 
     <div class="card-body">
 
         @if ($data->id == "")
-            <form id="main" method="POST" action="{{ route('post.store') }}" enctype="multipart/form-data">
+            <form id="main" method="POST" action="{{ route('product.store') }}" enctype="multipart/form-data">
         @else
-            <form id="main" method="POST" action="{{ route('post.update',$data) }}" enctype="multipart/form-data">
+            <form id="main" method="POST" action="{{ route('product.update',$data) }}" enctype="multipart/form-data">
             @method('PUT')
         @endif
 
@@ -31,22 +31,22 @@
         </div>
         @endif
             
-            <x-input name="subject" id="subject" 
-                        class="subject" style='color:green'
-                        label="Subject" required="true"
-                        :value="$data->subject"></x-input>
+            <x-input name="name" id="name" 
+                        style='color:green'
+                        label="Name" required="true"
+                        :value="$data->name"></x-input>
 
             {{--<div class="row mb-3">
-                <label for="subject" class="col-md-4 col-form-label text-md-right">
-                    {{ __('Subject') }}</label>
+                <label for="name" class="col-md-4 col-form-label text-md-right">
+                    {{ __('Name') }}</label>
 
                 <div class="col-md-6">
-                    <input id="subject" type="text" 
-                            class="form-control @error('subject') is-invalid @enderror" 
-                            name="subject" value="{{ old('subject',$data->subject) }}" 
+                    <input id="name" type="text" 
+                            class="form-control @error('name') is-invalid @enderror" 
+                            name="name" value="{{ old('name',$data->name) }}" 
                             autofocus>
 
-                    @error('subject')
+                    @error('name')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
@@ -130,22 +130,22 @@
             
             <div class="row mb-0">
                 <div class="col-md-8 offset-md-4">
-                    @can('update',$data)
+                    @canany(['create','update'],$data)
                     <button type="submit" class="btn btn-primary" form="main">
                         {{ __('Save') }}
                     </button>
                     @endcan
                     
                     @can('create',$data)
-                    <a class="btn btn-secondary" href='{{route("post.create")}}'>
-                        {{ __('New Post') }}
+                    <a class="btn btn-secondary" href='{{route("product.create")}}'>
+                        {{ __('New Product') }}
                     </a>
                     @endcan
 
                     
                     @can('delete',$data)
-                    <form name='delete' action="{{route('post.destroy',$data)}}" 
-                        method="post"
+                    <form name='delete' action="{{route('product.destroy',$data)}}" 
+                        method="POST"
                         style='display: inline-block;'>
                         @csrf
                         @method("DELETE")

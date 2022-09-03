@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Post;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PostPolicy
+class ProductPolicy
 {
     use HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class PostPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Post $post)
+    public function view(User $user, Product $product)
     {
         return true;
     }
@@ -47,26 +47,26 @@ class PostPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Post $post)
+    public function update(User $user, Product $product)
     {
-        return $user->level == User::AUTHOR_LEVEL && $user->id == $post->user_id
-            || $user->level == User::ADMIN_LEVEL && $post->exists;
+        return $user->level == User::AUTHOR_LEVEL && $user->id == $product->user_id
+            || $user->level == User::ADMIN_LEVEL && $product->exists;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Post  $post
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Post $post)
+    public function delete(User $user, Product $product)
     {
-        return $user->level == User::AUTHOR_LEVEL && $user->id == $post->user_id 
-            || $user->level == User::ADMIN_LEVEL && $post->exists;
+        return $user->level == User::AUTHOR_LEVEL && $user->id == $product->user_id 
+            || $user->level == User::ADMIN_LEVEL && $product->exists;
     }
 
     

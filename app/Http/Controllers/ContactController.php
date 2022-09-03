@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ContactPostRequest;
+use App\Http\Requests\ContactRequest;
 use App\Models\Contact;
 use App\Notifications\NewContact;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class ContactController extends Controller
         return view("contact");
     }
 
-    public function form(ContactPostRequest $request)
+    public function form(ContactRequest $request)
     {
 
         $validated = $request->validated();

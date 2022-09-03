@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Interno;
 
+use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Models\CategoryPost;
-use App\Models\Post;
+use App\Models\CategoryProduct;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,26 +30,26 @@ class CategoryController extends Controller
 
     #cria o obj item vazio
     public function create(){
-        $postsList = Post::all();
+        $productsList = Product::all();
         return view("categories.form", ["item"=>new Category(),
-                                        "postsList"=>$postsList]);
+                                        "productsList"=>$productsList]);
     }
 
     #abre o formulario de edição
     public function edit(Category $category){
-        $postsList = Post::all();
+        $productsList = Product::all();
 
-        $posts = Post::join("category_posts","category_posts.post_id","=","posts.id")
+        $products = Product::join("category_products","category_products.product_id","=","products.id")
                     ->where("category_id",$category->id)->paginate(2);
         return view("categories.form",["item"=>$category, 
-                                        "postsList"=>$postsList, "posts"=>$posts]);
+                                        "productsList"=>$productsList, "products"=>$products]);
     }
 
     protected function validator(array $data)
     {
         return Validator::make($data, [
             'name'    => 'required|string|max:255',
-            'post_id' => 'exclude_if:post_id,null|exists:posts,id',
+            'product_id' => 'exclude_if:product_id,null|exists:products,id',
         ]);
     }
 
@@ -73,12 +74,12 @@ class CategoryController extends Controller
         $data = $request->all();
         $category->update($data);
 
-        $post = Post::find($request["post_id"]);
-        if ($post != null){
+        $products = Product::find($request["product_id"]);
+        if ($products != null){
             #na documentação consta esse método
             #funciona, mas não insere os timestamps
-            #$category->posts()->attach($post);
-            CategoryPost::create(["post_id"=>$post->id,"category_id"=>$category->id]);
+            #$category->productss()->attach($products);
+            CategoryProduct::create(["product_id"=>$products->id,"category_id"=>$category->id]);
         }
 
         return redirect()->back()->with("success","Data updated!");

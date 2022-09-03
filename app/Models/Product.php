@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,14 +8,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 
-class Post extends Model
+class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
         "publish_date",
         "image",
-        "subject",
+        "name",
         "text",
         "slug",
         "user_id"
@@ -31,25 +30,29 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function categories(){
+        return $this->belongsToMany(Category::class);
+    }
+
     protected static function booted() {
         static::creating(function($request){
             $request->user_id = Auth::id();
         });
     }
 
-    public function setSubjectAttribute($subject){
-        $this->attributes["subject"] = $subject;
+    public function setNameAttribute($subject){
+        $this->attributes["name"] = $subject;
 
         
         if ($this->slug != "")
             return;#evitar que seja alterado
 
-        $post = Post::withTrashed()
+        $product = Product::withTrashed()
                         ->orderByDesc("id")
                         ->firstWhere("slug",$subject);
         $id = "";
-        if ($post){
-            $id = "_".($post->id + 1);
+        if ($product){
+            $id = "_".($product->id + 1);
         }
 
         $this->attributes["slug"] = Str::slug($subject).$id;

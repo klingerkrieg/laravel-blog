@@ -60,9 +60,9 @@
                             @endif
                         @else
 
-                            @can('viewAny', App\Models\Post::class)
+                            @can('viewAny', App\Models\Product::class)
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('post.list') }}">{{ __('Posts') }}</a>
+                                <a class="nav-link" href="{{ route('product.list') }}">{{ __('Products') }}</a>
                             </li>
                             @endcan
 

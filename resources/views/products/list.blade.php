@@ -5,20 +5,20 @@
 <div class="row justify-content-center">
 <div class="col-md-8">
 <div class="card">
-    <div class="card-header">{{ __('Posts') }}</div>
+    <div class="card-header">{{ __('Products') }}</div>
 
     <div class="card-body">
-        <form method="GET" action="{{ route('post.list') }}">
+        <form method="GET" action="{{ route('product.list') }}">
             @csrf
 
             <div class="row mb-3">
-                <label for="subject" class="col-md-4 col-form-label text-md-right">
-                    {{ __('Subject') }}</label>
+                <label for="name" class="col-md-4 col-form-label text-md-right">
+                    {{ __('Name') }}</label>
 
                 <div class="col-md-6">
-                    <input id="subject" type="text" 
+                    <input id="name" type="text" 
                             class="form-control" 
-                            name="subject" value="{{ old('subject') }}" 
+                            name="name" value="{{ old('name') }}" 
                             autofocus>
 
                 </div>
@@ -52,8 +52,8 @@
                         {{ __('Search') }}
                     </button>
 
-                    <a href='{{route("post.create")}}' class="btn btn-primary">
-                        {{ __('New Post') }}
+                    <a href='{{route("product.create")}}' class="btn btn-primary">
+                        {{ __('New Product') }}
                     </a>
                 </div>
             </div>
@@ -63,12 +63,12 @@
             <thead>
               <tr>
                 <th scope="col"></th>
-                <th scope="col">{{__("Subject")}}</th>
+                <th scope="col">{{__("Name")}}</th>
                 <th scope="col">{{__("Slug")}}</th>
                 <th scope="col">{{__("Publish date")}}</th>
                 <th scope="col">{{__("Text")}}</th>
                 <th scope="col">{{__("Owner")}}</th>
-                @can('delete', Post::class)
+                @can('delete', Product::class)
                     <th scope="col"></th>
                 @endcan
               </tr>
@@ -78,7 +78,7 @@
                 <tr>
                     @can('view', $item)
                     <td>
-                        <a href="{{route("post.edit",$item)}}" class="btn btn-primary">
+                        <a href="{{route("product.edit",$item)}}" class="btn btn-primary">
                             {{ __('Edit') }}
                         </a>
                     </td>
@@ -91,7 +91,7 @@
 
                     @can('delete', $item)
                         <td>
-                            <form action="{{route('post.destroy',$item)}}" method="post">
+                            <form action="{{route('product.destroy',$item)}}" method="post">
                                 @csrf
                                 @method("DELETE")
                                 <button type="button" onclick="confirmDeleteModal(this)" class="btn btn-danger">

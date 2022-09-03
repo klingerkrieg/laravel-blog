@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
-use App\Models\Post;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -35,8 +35,8 @@ class UserController extends Controller
 
     #abre o formulario de edição
     public function edit(User $user){
-        $posts = Post::where("user_id",$user->id)->paginate(2);
-        return view("users.form",["item"=>$user,"posts"=>$posts]);
+        $products = Product::where("user_id",$user->id)->paginate(2);
+        return view("users.form",["item"=>$user,"products"=>$products]);
     }
 
     protected function validator(array $data)

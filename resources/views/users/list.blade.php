@@ -40,7 +40,7 @@
                 <th scope="col"></th>
                 <th scope="col">{{__("Name")}}</th>
                 <th scope="col">{{__("E-mail")}}</th>
-                <th scope="col">{{__("Posts count")}}</th>
+                <th scope="col">{{__("Products count")}}</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -54,7 +54,7 @@
                     </td>
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->email }}</td>
-                    <td>{{ $item->posts->count() }}</td>
+                    <td>{{ $item->products->count() }}</td>
                     <td>
                         <form action="{{route('user.destroy',$item)}}" method="user">
                             @csrf
