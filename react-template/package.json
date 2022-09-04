@@ -1,0 +1,10 @@
+{
+  "name": "cra-template-aula-react",
+  "version": "1.0.0",
+  "main": "template.json",
+  "license": "MIT",
+  "files":[
+    "template.json",
+    "template"
+  ]
+}

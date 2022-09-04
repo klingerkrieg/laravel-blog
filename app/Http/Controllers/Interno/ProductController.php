@@ -21,6 +21,7 @@ class ProductController extends Controller
         #Gate::authorize('viewAny', Product::class);
 
         $pagination = Product::orderBy("name");
+        
 
         if (isset($request->name))
             $pagination->where("name","like","%$request->name%");
@@ -31,7 +32,18 @@ class ProductController extends Controller
 
         #$pagination->dd();
         #$pagination->dump();
-        return view("products.list", ["list"=>$pagination->paginate(3)]);
+
+        //$list = $pagination->paginate(3)->load('user');
+        $pagination->with(['user' => function ($query) {
+                $query->select('id', 'name');
+            }]);
+        $list = $pagination->paginate(3);
+
+        if ($request->expectsJson()){
+            return response()->json(['data'=>$list, 'error'=>false]);
+        } else {
+            return view("products.list", ["list"=>$list]);
+        }
     }
 
     #cria o obj item vazio
