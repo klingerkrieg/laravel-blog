@@ -21,7 +21,6 @@ class ProductController extends Controller
         #Gate::authorize('viewAny', Product::class);
 
         $pagination = Product::orderBy("name");
-        
 
         if (isset($request->name))
             $pagination->where("name","like","%$request->name%");
@@ -53,9 +52,16 @@ class ProductController extends Controller
     }
 
     #abre o formulario de edição
-    public function edit(Product $product){
+    public function edit(Product $product, Request $request){
+        
         #Gate::authorize('view', $product);
-        return view("products.form",["data"=>$product]);
+        $product->image = asset($product->image);
+        $product->user;
+        if ($request->expectsJson()){
+            return response()->json(["data"=>$product,"error"=>false]);
+        } else {
+            return view("products.form",["data"=>$product]);
+        }
     }
 
     public function store(ProductRequest $request){
@@ -68,13 +74,24 @@ class ProductController extends Controller
         $data["user_id"] = Auth::user()->id;
 
         $product = Product::create($data);
-        return redirect(route("product.edit",$product))->with("success","Data saved!");
+
+        if ($request->expectsJson()){
+            return response()->json(["error"=>false,
+                                    "message"=>"Data saved!",
+                                    "id"=>$product->id]);
+        } else {
+            return redirect(route("product.edit",$product))->with("success","Data saved!");
+        }
     }
 
-    public function destroy(Product $product){
+    public function destroy(Product $product, Request $request){
         #Gate::authorize('delete', $product);
         $product->delete();
-        return redirect(route("products.list"))->with("success","Data deleted!");
+        if ($request->expectsJson()){
+            return response()->json(["error"=>false,"message"=>"Data deleted!"]);
+        } else {
+            return redirect(route("products.list"))->with("success","Data deleted!");
+        }
     }
 
     
@@ -83,9 +100,13 @@ class ProductController extends Controller
     public function update(Product $product, ProductRequest $request) {
         #Gate::authorize('update', $product);
 
+        if($product->id == null){
+            $product = Product::find($request->get('id'));
+        }
+
         $validated = $request->validated();
         
-        $data = $request->all();
+        $data = $request->only(['id','name','publish_date','text']);
         #necessário, pois não é obrigatório atualizar a imagem
         if ($request->file('image') != null){
             $path = $request->file('image')->store('products',"public");
@@ -93,7 +114,12 @@ class ProductController extends Controller
         }
 
         $product->update($data);
-        return redirect()->back()->with("success","Data updated!");
+        
+        if ($request->expectsJson()){
+            return response()->json(["error"=>false,"message"=>"Data updated!"]);
+        } else {
+            return redirect()->back()->with("success","Data updated!");
+        }
     }
     
 }

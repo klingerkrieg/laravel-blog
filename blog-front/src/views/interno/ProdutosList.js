@@ -4,30 +4,32 @@ import { useEffect, useRef, useState } from "react";
 import Field from "../../components/Field";
 import { Link } from "react-router-dom";
 import ConfirmModal from "../../components/ConfirmModal";
+import { PaginateList } from "../../components/PaginateList";
+import { FlashMessage } from "../../components/FlashMessage";
 
 export default function Produtos (){
 
     let canView = true;
     let canDelete = true;
 
-    const [dados, setDados] = useState({email:'',password:''});
-    const [list, setList] = useState({data:[]});
-    const [loading, setLoading] = useState(true);
+    const [dados, setDados] = useState({name:'',publish_date:'',text:''});
+    const list = useRef();
     const confirmModal = useRef();
+    const flash = useRef();
 
     useEffect(() => {
-        loadList();
+        list.current.update();
     },[]);
 
-    const loadList = () => {
-        setLoading(true);
-        ProdutosController.getAll().then(resp => {
+    const loadList = (url) => {
+        list.current.setRefreshing(true);
+        ProdutosController.getAll(url,dados).then(resp => {
             if (resp.error == 0){
-                setList(resp.data);
+                list.current.setData(resp.data);
             } else {
                 console.log("Falha ao buscar os dados");
             }
-            setLoading(false);
+            list.current.setRefreshing(false);
         })
     }
 
@@ -48,8 +50,9 @@ export default function Produtos (){
         ProdutosController.deletar(item.id).then(resp => {
             if (resp.error == 0){
                 loadList();
+                flash.current.setWarning(resp.message);
             } else {
-                console.log("Falha ao deletar");
+                flash.current.setError("Falha ao deletar");
             }
         })
     }
@@ -63,8 +66,11 @@ export default function Produtos (){
     return <Interno>
                 <ConfirmModal ref={confirmModal} onConfirm={deletarItem}></ConfirmModal>
                 <div className="container">
+
+                <FlashMessage ref={flash}></FlashMessage>
+
                 <div className="row justify-content-center">
-                <div className="col-md-8">
+                <div className="col-md-12">
                 <div className="card">
                     <div className="card-header">Produtos</div>
 
@@ -75,7 +81,7 @@ export default function Produtos (){
                                             value={dados.name} 
                                             onChange={(evt) => handleInput(evt)}/>
 
-                            <Field name="publish_date" type="text" label="Data de publicação"
+                            <Field name="publish_date" type="date" label="Data de publicação"
                                             value={dados.publish_date} 
                                             onChange={(evt) => handleInput(evt)}/>
 
@@ -96,61 +102,33 @@ export default function Produtos (){
                             </div>
                         </form>
 
-                        <table className="table">
-                            <thead>
-                            <tr>
-                                <th scope="col"></th>
-                                <th scope="col">Nome</th>
-                                <th scope="col">Slug</th>
-                                <th scope="col">Data de publicação</th>
-                                <th scope="col">Texto</th>
-                                <th scope="col">Dono</th>
-                                {canDelete &&
-                                    <th scope="col"></th>
-                                }
-                            </tr>
-                            </thead>
-                            <tbody>
-                            
-                            {loading ?
-                                <tr>
-                                    <td colSpan={5}>
-                                        Carregando...
-                                    </td>
-                                </tr>
-                                :
-                            
-                                list.data.map((item,k)=> {
-                                    
-                                    return <tr key={k}>
-                                        {canView &&
-                                            <td>
-                                                //passar o parametro
-                                                <Link to="/produto/" className="btn btn-primary">
-                                                    Editar
-                                                </Link>
-                                            </td>
-                                        }
-                                        <td>{item.name}</td>
-                                        <td>{item.slug}</td>
-                                        <td>{item.publish_date}</td>
-                                        <td>{item.text}</td>
-                                        <td>{item.user.name}</td>
-
-                                        {canDelete && 
-                                            <td>
-                                                <button type="button" onClick={() => confirmDeleteModal(item)} className="btn btn-danger">
-                                                    Deletar
-                                                </button>
-                                            </td>
-                                        }
-                                    </tr>
-                                })
-                            }
-                            </tbody>
-                        </table>
-
-                        PAGINACAO
+                        <PaginateList
+                            ref={list}
+                            update={loadList}
+                            columns={["","Nome","Slug","Data de publicação",
+                                      "Texto","Dono","Deletar"]}
+                            item={(item, k) => <tr key={k}>
+                                <td>
+                                    {canView &&
+                                        <Link to={'/produto/'+item.id} className="btn btn-primary">
+                                            Editar
+                                        </Link>
+                                    }
+                                </td>
+                                <td>{item.name}</td>
+                                <td>{item.slug}</td>
+                                <td>{item.publish_date.substr(0,10)}</td>
+                                <td>{item.text}</td>
+                                <td>{item.user.name}</td>
+                                <td>
+                                    {canDelete && 
+                                        <button type="button" onClick={() => confirmDeleteModal(item)} className="btn btn-danger">
+                                            Deletar
+                                        </button>
+                                    }
+                                </td>
+                                </tr>}
+                        ></PaginateList>
 
                     </div>
                 </div>

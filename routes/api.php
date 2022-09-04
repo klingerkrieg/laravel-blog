@@ -35,12 +35,12 @@ Route::group([
 
     Route::middleware(['auth:api','can:viewAny,App\Models\Product'])->group(function () {
         Route::get('produtos', [ProductController::class, 'list']);
-        Route::get('produto/{id}', [ProductController::class, 'edit']);
-        Route::post('produto', [ProductController::class, 'store']);
-        Route::put('produto', [ProductController::class, 'update']);
+        Route::get('produtos/{product}', [ProductController::class, 'edit']);
+        Route::post('produtos', [ProductController::class, 'store']);
+        Route::put('produtos', [ProductController::class, 'update']);
         #por algum motivo o insomnia nao faz multipart/form-data com put
-        Route::post('produto/upd', [ProductController::class, 'update']);
-        Route::delete('produto', [ProductController::class, 'destroy']);
+        Route::post('produtos/upd', [ProductController::class, 'update']);
+        Route::delete('produtos/{product}', [ProductController::class, 'destroy']);
     });
 
 });

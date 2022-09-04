@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom"
 import { logout } from "../controllers/Auth";
 
+
 export default function Menu(){
 
     const navigate = useNavigate();

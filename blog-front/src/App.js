@@ -12,7 +12,7 @@ const Login = lazy(() => import('./views/Login'));
 const Home = lazy(() => import('./views/Home'));
 const Dashboard = lazy(() => import('./views/interno/Dashboard'));
 const ProdutosList = lazy(() => import('./views/interno/ProdutosList'));
-const Produtos = lazy(() => import('./views/interno/Produtos'));
+const Produto = lazy(() => import('./views/interno/Produto'));
 
 
 const App = () => (
@@ -25,7 +25,8 @@ const App = () => (
         <Route path="/home" element={<Home/>} />
         <Route path="/dashboard" element={<Guard element={<Dashboard/>}/>} />
         <Route path="/produtos" element={<Guard element={<ProdutosList/>}/>} />
-        <Route path="/produto" element={<Guard element={<Produtos/>}/>} />
+        <Route path="/produto/:id" element={<Guard element={<Produto/>}/>} />
+        <Route path="/produto" element={<Guard element={<Produto/>}/>} />
       </Routes>
 
     </Suspense>

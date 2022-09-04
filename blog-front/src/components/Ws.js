@@ -1,4 +1,4 @@
-import {AUTH_LARAVEL, AUTH_NODE, WS_URL, DEBUG} from '../config';
+import {AUTH_LARAVEL, AUTH_NODE, WS_URL, DEBUG, REACT_JS, REACT_TYPE, logoutCallback} from '../config';
 import FormData from 'form-data'
 const axios = require('axios').default;
 
@@ -12,19 +12,27 @@ function uploadBuild(dados, arquivos){
         for ( var key in arquivos ) {
             if ( Array.isArray(arquivos[key])){
                 arquivos[key].map((file,i) => {
-                    //só adiciona os elementos que tiverem fileName
-                    if (file.fileName == undefined){
-                        return;
-                    }
-                    data.append(key+"["+i+"]", {name:file.fileName,
+                    if (REACT_TYPE == REACT_JS){
+                        data.append(key+"["+i+"]", file)
+                    } else {
+                        //só adiciona os elementos que tiverem fileName
+                        if (file.fileName == undefined){
+                            return;
+                        }
+                        data.append(key+"["+i+"]", {name:file.fileName,
                                                 uri:file.uri,
                                                 type:file.type})
+                    }
                 })
             } else {
-                let fileData = {name:arquivos[key].fileName,
-                            uri:arquivos[key].uri,
-                            type:arquivos[key].type}
-                data.append(key, fileData);
+                if (REACT_TYPE == REACT_JS){
+                    data.append(key, arquivos[key])
+                } else {
+                    let fileData = {name:arquivos[key].fileName,
+                        uri:arquivos[key].uri,
+                        type:arquivos[key].type}
+                    data.append(key, fileData);
+                }
             }
         }
         return data;
@@ -87,6 +95,15 @@ export async function makeRequest(method,action,dados,arquivos){
 
     let erro = null;
 
+    if (method.toUpperCase() == 'GET'){
+        dados = new URLSearchParams(dados).toString();
+        if (url.indexOf('?')>0){
+            url += dados;
+        } else {
+            url += '?'+dados;
+        }
+    }
+
     //faz a requisicao
     const resp = await axios({
         method:method,
@@ -102,7 +119,16 @@ export async function makeRequest(method,action,dados,arquivos){
     });
 
     if (resp == undefined){
-        return {error:1, message:erro};
+        //se isso ocorrer é porque está deslogado
+        //pode ter perdido a sessao
+        if (erro.response.status == 401){
+            logoutCallback();
+        } else 
+        if (erro.response.status == 422) {
+            //422 = erro de validacao
+            return {error:1, message:erro, code:erro.response.status, errors:erro.response.data.errors};
+        }
+        return {error:1, message:erro, code:erro.response.status};
     }
 
     //se for para debugar

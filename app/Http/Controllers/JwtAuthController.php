@@ -40,9 +40,8 @@ class JwtAuthController extends Controller{
         
         $validator = $this->validLogin($request->all());
         
-        if ($validator->fails()){
-            return response()->json(["error"=>1, "validation"=>1, "message"=>$validator->getMessageBag()]);
-        } else {
+        if ($validator->validate()){
+            
             $credentials = $request->only(['email', 'password']);
             if (! $token = $this->guard()->attempt($credentials)) {
                 return response()->json(['error' => 'Unauthorized'], 401);
@@ -120,10 +119,8 @@ class JwtAuthController extends Controller{
 
         $validator = $this->validator($data);
 
-        if ($validator->fails()){
-            return response()->json(["error"=>1, "validation"=>1, "message"=>$validator->getMessageBag()]);
-        } else {
-
+        if ($validator->validate()){
+            
             $data['password'] = Hash::make($data['password']);
             $obj = User::create($data);
             

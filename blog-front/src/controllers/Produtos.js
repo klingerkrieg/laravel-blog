@@ -1,7 +1,10 @@
 import { makeRequest } from '../components/Ws';
 
-export async function getAll(){
-    const json = await makeRequest('GET','api/produtos');
+export async function getAll(url,dados){
+    if (url == undefined){
+        url = 'api/produtos'
+    }
+    const json = await makeRequest('GET',url,dados);
     if (json.error == 0){
         return json;
     } else {
@@ -10,8 +13,9 @@ export async function getAll(){
 }
 
 export async function getOne(id){
-    const json = await makeRequest('GET','api/produto/'+id);
+    const json = await makeRequest('GET','api/produtos/'+id);
     if (json.error == 0){
+        json.data.publish_date = json.data.publish_date.substr(0,10);
         return json;
     } else {
         return json;
@@ -19,8 +23,8 @@ export async function getOne(id){
 }
 
 
-export async function salvar(dados){
-    const json = await makeRequest('POST','api/produtos',dados);
+export async function salvar(dados,arquivos){
+    const json = await makeRequest('POST','api/produtos',dados,arquivos);
     if (json.error == 0){
         return json;
     } else {
@@ -28,8 +32,8 @@ export async function salvar(dados){
     }    
 }
 
-export async function atualizar(dados){
-    const json = await makeRequest('PUT','api/produtos',dados);
+export async function atualizar(dados,arquivos){
+    const json = await makeRequest('POST','api/produtos/upd',dados,arquivos);
     if (json.error == 0){
         return json;
     } else {
@@ -38,7 +42,7 @@ export async function atualizar(dados){
 }
 
 export async function deletar(id){
-    const json = await makeRequest('DELETE','api/produtos',{id:id});
+    const json = await makeRequest('DELETE','api/produtos/'+id);
     if (json.error == 0){
         return json;
     } else {

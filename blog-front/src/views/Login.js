@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import Field from '../components/Field';
 import { login } from '../controllers/Auth';
 import Interno from './layouts/Interno';
-
+import { FlashMessage } from '../components/FlashMessage';
 
 export default function Login(){
 
     const [dados, setDados] = useState({email:'',password:''});
+    const [errors, setErrors] = useState({});
+
+    const flash = useRef();
+
     const navigate = useNavigate();
 
     const handleInput = (evt) => {
@@ -16,13 +20,29 @@ export default function Login(){
         setDados({...dados, [name]:value});
     }
 
+    const showError = (msg) => {
+        console.log(msg);
+        if (msg.code == 422){
+            setErrors(msg.errors);
+        } else
+        if (msg.code == 401){
+            flash.current.setError("Usuário ou senha incorreta.");
+            setErrors({});
+        } else {
+            flash.current.setError("Houve uma falha ao tentar logar.");
+            setErrors({});
+        }
+    }
+
     const handleSubmit = (evt) => {
-        console.log(dados);
         evt.preventDefault();
 
         login(dados).then(resp => {
-            console.log(resp);
-            navigate("/dashboard");
+            if (resp.error == 0){
+                navigate("/dashboard");
+            } else {
+                showError(resp);
+            }
         });
     }
     
@@ -32,8 +52,10 @@ export default function Login(){
 
         return (
             <Interno title="Teste">
-
             <div className="container">
+
+            <FlashMessage ref={flash} className="col-md-8"></FlashMessage>
+            
                 <div className="row justify-content-center">
                     <div className="col-md-8">
                         <div className="card">
@@ -44,10 +66,12 @@ export default function Login(){
                                 
                                     <Field name="email" type="email" label="E-mail"
                                             value={dados.email} 
+                                            error={errors.email}
                                             onChange={(evt) => handleInput(evt)}/>
 
                                     <Field name="password" type="password" label="Senha"
                                             value={dados.password} 
+                                            error={errors.password}
                                             onChange={(evt) => handleInput(evt)}/>
 
                                     <div className="row mb-0">

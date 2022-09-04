@@ -29,7 +29,7 @@ class ProductRequest extends FormRequest
         ];
         #somente obrigatório quando for um novo
         if ($this->method() == "POST"){
-            $rules['image'] = 'required|image|max:1024';
+            $rules['image'] = 'image|max:1024';
         } else
         if ($this->method() == "PUT"){
             $rules['image'] = 'image|max:1024';
