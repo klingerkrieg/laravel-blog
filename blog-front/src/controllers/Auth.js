@@ -18,9 +18,13 @@ export async function login(dados, saveLogin){
 }
 
 export async function logout(){
-    localStorage.removeItem("jwtToken")
-    //localStorage.getItem("jwtToken") = null;
-    //await AsyncStorage.removeItem('@token');
+    localStorage.removeItem("jwtToken");
+    axios.post(WS_URL+"api/logout").then(resp => {
+        console.log(resp);
+    });
+    axios.defaults.headers = {
+        'Accept': 'application/json'
+    };
 }
 
 

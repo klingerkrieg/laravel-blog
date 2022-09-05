@@ -24,7 +24,6 @@ Route::group([
     'middleware' => 'api'
 ], function ($router) {
 
-    /* pacientes */
     Route::post('login', [JwtAuthController::class, 'login']);
     Route::post('logout', [JwtAuthController::class, 'logout']);
     Route::post('refresh', [JwtAuthController::class, 'refresh']);
